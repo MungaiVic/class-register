@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 )
@@ -30,7 +31,8 @@ func main() {
 		fmt.Println("2. Add a student to a class")
 		fmt.Println("3. Remove a student from a class")
 		fmt.Println("4. Print all students in a class")
-		fmt.Println("5. Exit")
+		fmt.Println("5. Log start time of class")
+		fmt.Println("6. Log end time of class")
 		fmt.Print("Please enter your choice: ")
 		var choice int
 		fmt.Scanln(&choice)
@@ -49,7 +51,8 @@ func main() {
 			fmt.Println(classes)
 			fmt.Println("Class created successfully")
 			fmt.Println()
-			fmt.Println(classes)
+			// fmt.Println(classes)
+			json.MarshalIndent(classes, "", "  ")
 		case 2:
 			fmt.Println("Add a student to a class")
 			fmt.Print("Please enter the name of the student: ")
@@ -79,11 +82,33 @@ func main() {
 				fmt.Scanln(&className)
 				PrintStudentsInClass(className)
 			}
+
 		case 5:
+			fmt.Println("Log start time of class")
+			fmt.Print("Enter name of class: ")
+			var className string
+			fmt.Scanln(&className)
+			// check if class exists
+			if classNameExists(className) {
+				// check if class has already started
+				if classHasStarted(className) {
+					fmt.Println("Class has already started")
+				} else {
+					// log start time
+					LogStartTime(className)
+				}
+			} else {
+				fmt.Println("Class does not exist")
+			}
+
+		case 6:
+			fmt.Println("Log end time of class")
+		case 7:
 			fmt.Println("Exit")
 			return
 		default:
 			fmt.Println("Invalid choice")
+			continue
 		}
 	}
 }

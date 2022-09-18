@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"os/exec"
 
 	"github.com/google/uuid"
@@ -55,6 +56,37 @@ func classNameExists(className string) bool {
 	for i := 0; i < len(classes); i++ {
 		if classes[i].name == className {
 			return true
+		}
+	}
+	return false
+}
+
+func LogStartTime(className string) {
+	// find class
+	if classNameExists(className){
+		// check if class has started
+		for i := 0; i < len(classes); i++ {
+			if classes[i].name == className {
+				if classes[i].startTime == nil {
+					// log start time
+					currentTime := time.Now()
+					classes[i].startTime = &currentTime
+				}
+			}
+		}
+	}
+}
+
+func classHasStarted(className string) bool {
+	// find class
+	if classNameExists(className){
+		// check if class has started
+		for i := 0; i < len(classes); i++ {
+			if classes[i].name == className {
+				if classes[i].startTime != nil {
+					return true
+				}
+			}
 		}
 	}
 	return false
