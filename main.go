@@ -33,6 +33,7 @@ func main() {
 		fmt.Println("4. Print all students in a class")
 		fmt.Println("5. Log start time of class")
 		fmt.Println("6. Log end time of class")
+		fmt.Println("7. Exit")
 		fmt.Print("Please enter your choice: ")
 		var choice int
 		fmt.Scanln(&choice)
@@ -103,6 +104,21 @@ func main() {
 
 		case 6:
 			fmt.Println("Log end time of class")
+			fmt.Print("Enter name of class: ")
+			var className string
+			fmt.Scanln(&className)
+			// check if class exists
+			if classNameExists(className) {
+				// check if class has already ended
+				if classHasEnded(className) {
+					fmt.Println("Class has already ended")
+				} else {
+					// log end time
+					LogEndTime(className)
+				}
+			} else {
+				fmt.Println("Class does not exist")
+			}
 		case 7:
 			fmt.Println("Exit")
 			return

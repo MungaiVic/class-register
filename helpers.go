@@ -91,3 +91,34 @@ func classHasStarted(className string) bool {
 	}
 	return false
 }
+
+func classHasEnded(className string) bool{
+	//find class
+	if classNameExists(className){
+		// check if class has ended
+		for i := 0; i < len(classes); i++ {
+			if classes[i].name == className {
+				if classes[i].endTime != nil {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func LogEndTime(className string) {
+	// find class
+	if classNameExists(className){
+		// check if class has ended
+		for i := 0; i < len(classes); i++ {
+			if classes[i].name == className {
+				if classes[i].endTime == nil {
+					// log end time
+					currentTime := time.Now()
+					classes[i].endTime = &currentTime
+				}
+			}
+		}
+	}
+}
