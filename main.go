@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+	// "golang.org/x/exp/slices"
 )
 
 var classes = make([]Class, 0) // making a list of maps. The 0 is the initial size of the list
@@ -72,6 +73,14 @@ func main() {
 			AddStudentToClass(studentData, className)
 		case 3:
 			fmt.Println("Remove a student from a class")
+			fmt.Print("Enter name of class: ")
+			var className string
+			fmt.Scanln(&className)
+			fmt.Print("Enter name of student: ")
+			var studentName string
+			fmt.Scanln(&studentName)
+			RemoveStudentFromClass(studentName, className)
+
 		case 4:
 			fmt.Println("Print all students in a class")
 			var className string

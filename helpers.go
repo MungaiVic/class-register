@@ -39,6 +39,24 @@ func AddStudentToClass(student Student, className string) {
 	for i := 0; i < len(classes); i++ {
 		if classes[i].name == className {
 			classes[i].students = append(classes[i].students, student)
+			student.isInClass = true
+		}
+	}
+}
+
+func RemoveStudentFromClass(studentName, className string) {
+	// find class
+	if classNameExists(className){
+		// find student
+		for i := 0; i < len(classes); i++ {
+			if classes[i].name == className {
+				for j := 0; j < len(classes[i].students); j++ {
+					if classes[i].students[j].name == studentName {
+						// remove student
+						classes[i].students = append(classes[i].students[:j], classes[i].students[j+1:]...)
+					}
+				}
+			}
 		}
 	}
 }
