@@ -1,9 +1,10 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"time"
 	"os/exec"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -27,10 +28,10 @@ func CreateClass(name string) {
 
 func CreateStudent(name string, age int) Student {
 	newStudent := Student{
-		id:        uuid.New().String(),
-		name:      name,
-		age:       age,
-		isInClass: false,
+		ID:        uuid.New().String(),
+		Name:      name,
+		Age:       age,
+		IsInClass: false,
 	}
 	return newStudent
 }
@@ -39,19 +40,19 @@ func AddStudentToClass(student Student, className string) {
 	for i := 0; i < len(classes); i++ {
 		if classes[i].name == className {
 			classes[i].students = append(classes[i].students, student)
-			student.isInClass = true
+			student.IsInClass = true
 		}
 	}
 }
 
 func RemoveStudentFromClass(studentName, className string) {
 	// find class
-	if classNameExists(className){
+	if classNameExists(className) {
 		// find student
 		for i := 0; i < len(classes); i++ {
 			if classes[i].name == className {
 				for j := 0; j < len(classes[i].students); j++ {
-					if classes[i].students[j].name == studentName {
+					if classes[i].students[j].Name == studentName {
 						// remove student
 						classes[i].students = append(classes[i].students[:j], classes[i].students[j+1:]...)
 					}
@@ -81,7 +82,7 @@ func classNameExists(className string) bool {
 
 func LogStartTime(className string) {
 	// find class
-	if classNameExists(className){
+	if classNameExists(className) {
 		// check if class has started
 		for i := 0; i < len(classes); i++ {
 			if classes[i].name == className {
@@ -97,7 +98,7 @@ func LogStartTime(className string) {
 
 func classHasStarted(className string) bool {
 	// find class
-	if classNameExists(className){
+	if classNameExists(className) {
 		// check if class has started
 		for i := 0; i < len(classes); i++ {
 			if classes[i].name == className {
@@ -110,9 +111,9 @@ func classHasStarted(className string) bool {
 	return false
 }
 
-func classHasEnded(className string) bool{
+func classHasEnded(className string) bool {
 	//find class
-	if classNameExists(className){
+	if classNameExists(className) {
 		// check if class has ended
 		for i := 0; i < len(classes); i++ {
 			if classes[i].name == className {
@@ -127,7 +128,7 @@ func classHasEnded(className string) bool{
 
 func LogEndTime(className string) {
 	// find class
-	if classNameExists(className){
+	if classNameExists(className) {
 		// check if class has ended
 		for i := 0; i < len(classes); i++ {
 			if classes[i].name == className {
@@ -139,4 +140,19 @@ func LogEndTime(className string) {
 			}
 		}
 	}
+}
+
+// student queries for the Student with specified ID
+func StudentByID(id int64) (Student, error) {
+	// a Student to hold the result
+	var s Student
+	// query the database for the Student with the specified ID
+	row := db.QueryRow("SELECT * from student WHERE id = ?", id)
+	// unmarshal the row object to Student
+	if err := row.Scan(&s.ID, &s.Name, &s.Age, &s.IsInClass); err != nil {
+		if err == sql.ErrNoRows {
+			return s, fmt.Errorf("Student with ID %d not found", id)
+		}
+	}
+	return s, nil
 }

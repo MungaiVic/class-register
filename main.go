@@ -1,20 +1,25 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
-	// "golang.org/x/exp/slices"
+	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/go-sql-driver/mysql"
 )
 
 var classes = make([]Class, 0) // making a list of maps. The 0 is the initial size of the list
 var students = make([]Student, 0)
 
 type Student struct {
-	id        string
-	name      string
-	age       int
-	isInClass bool
+	ID        string
+	Name      string
+	Age       int
+	IsInClass bool
 }
 
 type Class struct {
@@ -25,9 +30,36 @@ type Class struct {
 	endTime   *time.Time
 }
 
+var db *sql.DB
+
 func main() {
+	dotenv := godotenv.Load("conf.env")
+	if dotenv != nil {
+		log.Fatal("Failed to load .env file")
+	}
+
+	// Capture Connection properties
+	cfg := mysql.Config{
+		User:   os.Getenv("DBUSER"),
+		Passwd: os.Getenv("DBPASS"),
+		Net:    "tcp",
+		Addr:   "127.0.0.1:3306",
+		DBName: "class_reg",
+	}
+	// Get a database handle
+	var err error
+	db, err = sql.Open("mysql", cfg.FormatDSN())
+	if err != nil {
+		log.Fatal(err)
+	}
+	pingErr := db.Ping()
+	if pingErr != nil {
+		log.Fatal(pingErr)
+	}
+
 	fmt.Println("Welcome to Class Register")
 	for {
+		fmt.Println("0. Get student by id")
 		fmt.Println("1. Create a new class")
 		fmt.Println("2. Add a student to a class")
 		fmt.Println("3. Remove a student from a class")
@@ -39,6 +71,16 @@ func main() {
 		var choice int
 		fmt.Scanln(&choice)
 		switch choice {
+		case 0:
+			fmt.Print("Enter student id: ")
+			var id int64
+			fmt.Scanln(&id)
+			student, err := StudentByID(id)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("Student found: ",student)
+
 		case 1:
 			fmt.Println("Create a new class")
 			fmt.Print("Please enter the name of the class: ")
