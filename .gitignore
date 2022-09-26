@@ -19,3 +19,8 @@
 
 # env configuration
 .env
+
+# compiled output
+class-register
+
+
