@@ -33,7 +33,7 @@ type Class struct {
 var db *sql.DB
 
 func main() {
-	dotenv := godotenv.Load("conf.env")
+	dotenv := godotenv.Load(".env")
 	if dotenv != nil {
 		log.Fatal("Failed to load .env file")
 	}
@@ -44,7 +44,7 @@ func main() {
 		Passwd: os.Getenv("DBPASS"),
 		Net:    "tcp",
 		Addr:   "127.0.0.1:3306",
-		DBName: "class_reg",
+		DBName: os.Getenv("DBNAME"),
 	}
 	// Get a database handle
 	var err error

@@ -18,9 +18,8 @@
 # vendor/
 
 # env configuration
-.env
+*.env
+
 
 # compiled output
 class-register
-
-
