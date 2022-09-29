@@ -80,10 +80,12 @@ func main() {
 
 		case 1:
 			fmt.Println("Create a new class")
-			fmt.Print("Please enter the name of the class: ")
 			var className string
 			var maxSize uint8
+			fmt.Print("Please enter the name of the class: ")
 			fmt.Scanln(&className)
+			fmt.Print("Please enter the maximum size of class: ")
+			fmt.Scanln(&maxSize)
 			// check if class name already exists
 			if classNameExists(className) {
 				fmt.Println("Class name already exists")
@@ -98,10 +100,8 @@ func main() {
 				}
 				fmt.Printf("New class ID: %v\n", newClass)
 			}
-			// fmt.Println(classes)
-			// fmt.Println("Class created successfully")
+
 			fmt.Println()
-			// fmt.Println(classes)
 			json.MarshalIndent(classes, "", "  ")
 		case 2:
 			fmt.Println("Add a student to a class")

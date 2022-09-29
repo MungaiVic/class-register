@@ -76,7 +76,7 @@ func classNameExists(className string) bool {
 	// unmarshall the row object to Class
 	if err := row.Scan(&class.id, &class.name, &class.maxSize); err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Printf("Class with name %v  cannot be found", className)
+			// Do nothing is duplicate class name is not found
 			return false
 		}
 	}
