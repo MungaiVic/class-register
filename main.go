@@ -5,11 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 var classes = make([]Class, 0) // making a list of maps. The 0 is the initial size of the list
@@ -18,16 +17,14 @@ var students = make([]Student, 0)
 type Student struct {
 	ID        string
 	Name      string
-	Age       int
+	Age       uint8
 	IsInClass bool
 }
 
 type Class struct {
-	id        string
-	name      string
-	students  []Student
-	startTime *time.Time
-	endTime   *time.Time
+	id      string
+	name    string
+	maxSize uint8
 }
 
 var db *sql.DB
@@ -79,21 +76,30 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fmt.Println("Student found: ",student)
+			fmt.Println("Student found: ", student)
 
 		case 1:
 			fmt.Println("Create a new class")
 			fmt.Print("Please enter the name of the class: ")
 			var className string
+			var maxSize uint8
 			fmt.Scanln(&className)
 			// check if class name already exists
 			if classNameExists(className) {
 				fmt.Println("Class name already exists")
 			} else {
-				CreateClass(className)
+				newClass, err := CreateClass(Class{
+					name:    className,
+					maxSize: maxSize,
+				})
+				if err != nil {
+					fmt.Println("Something went wrong")
+					continue
+				}
+				fmt.Printf("New class ID: %v\n", newClass)
 			}
-			fmt.Println(classes)
-			fmt.Println("Class created successfully")
+			// fmt.Println(classes)
+			// fmt.Println("Class created successfully")
 			fmt.Println()
 			// fmt.Println(classes)
 			json.MarshalIndent(classes, "", "  ")
@@ -103,7 +109,7 @@ func main() {
 			var studentName string
 			fmt.Scanln(&studentName)
 			fmt.Print("Please enter the age of the student: ")
-			var studentAge int
+			var studentAge uint8
 			fmt.Scanln(&studentAge)
 			// Create Student
 			studentData := CreateStudent(studentName, studentAge)
