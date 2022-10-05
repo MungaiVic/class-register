@@ -19,3 +19,13 @@ CREATE TABLE class (
     PRIMARY KEY (`id`),
     UNIQUE KEY `className` (`className`)
 );
+
+DROP TABLE IF EXISTS classtime;
+CREATE TABLE classtime (
+    id INT AUTO_INCREMENT NOT NULL,
+    classId INT NOT NULL,
+    startTime VARCHAR(128) NOT NULL,
+    endTime VARCHAR(128) NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (classId) REFERENCES class(id)
+);

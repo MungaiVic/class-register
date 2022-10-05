@@ -8,7 +8,11 @@
 ## Key things to note
 
 - At present, the app only works in memory. This means that all data created will NOT persist when the app is stopped or interupted.
-- As the project evolves, a database will be used to persist this data. A shell script might also be provided to aid in setting up the database(MySQL).
+- The app is slowly being migrated to using MySQL database for persistence of data. One can:
+    1. Find a student by ID
+    2. Check if a class exists
+    3. Create a class.
+- Other features will be ported to storing data in a DB over time.
 
 ## App functionality
 
@@ -21,7 +25,7 @@
 go run .
 ```
 
-**OR**
+#### OR
 
 ```bash
 go run main.go helpers.go

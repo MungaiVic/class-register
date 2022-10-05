@@ -103,13 +103,7 @@ func classHasStarted(className string) bool {
 	// find class
 	if classNameExists(className) {
 		// check if class has started
-		for i := 0; i < len(classes); i++ {
-			if classes[i].name == className {
-				// if classes[i].startTime != nil {
-				// 	return true
-				// }
-			}
-		}
+		fmt.Println("Checking")
 	}
 	return false
 }
@@ -145,17 +139,19 @@ func LogEndTime(className string) {
 	}
 }
 
-// student queries for the Student with specified ID
-func StudentByID(id int64) (Student, error) {
+/*
+This function is used in two ways.
+*/
+func StudentByID(id uint64) (Student, error, bool) {
 	// a Student to hold the result
-	var s Student
+	var student Student
 	// query the database for the Student with the specified ID
 	row := db.QueryRow("SELECT * from student WHERE id = ?", id)
 	// unmarshal the row object to Student
-	if err := row.Scan(&s.ID, &s.Name, &s.Age, &s.IsInClass); err != nil {
+	if err := row.Scan(&student.ID, &student.Name, &student.Age, &student.IsInClass); err != nil {
 		if err == sql.ErrNoRows {
-			return s, fmt.Errorf("Student with ID %d not found", id)
+			return student, fmt.Errorf("Student with ID %d not found", id), false
 		}
 	}
-	return s, nil
+	return student, nil, true
 }

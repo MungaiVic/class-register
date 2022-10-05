@@ -12,7 +12,6 @@ import (
 )
 
 var classes = make([]Class, 0) // making a list of maps. The 0 is the initial size of the list
-var students = make([]Student, 0)
 
 type Student struct {
 	ID        string
@@ -70,9 +69,9 @@ func main() {
 		switch choice {
 		case 0:
 			fmt.Print("Enter student id: ")
-			var id int64
+			var id uint64
 			fmt.Scanln(&id)
-			student, err := StudentByID(id)
+			student, err, _ := StudentByID(id)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -105,20 +104,35 @@ func main() {
 			json.MarshalIndent(classes, "", "  ")
 		case 2:
 			fmt.Println("Add a student to a class")
-			fmt.Print("Please enter the name of the student: ")
-			var studentName string
-			fmt.Scanln(&studentName)
-			fmt.Print("Please enter the age of the student: ")
-			var studentAge uint8
-			fmt.Scanln(&studentAge)
-			// Create Student
-			studentData := CreateStudent(studentName, studentAge)
-			// Add student to list of students
-			students = append(students, studentData)
-			fmt.Print("Please enter the name of the class: ")
-			var className string
-			fmt.Scanln(&className)
-			AddStudentToClass(studentData, className)
+			fmt.Print("Please enter the ID number of the student: ")
+			var studentID uint64
+			fmt.Scanln(&studentID)
+			// Check if student exists
+			_, err, studentExists := StudentByID(studentID)
+			if err != nil {
+				fmt.Printf("Something went wrong in this way:\n		%v\n", err)
+				continue
+			}
+			if studentExists {
+				fmt.Print("Enter class name: ")
+				var className string
+				fmt.Scan(&className)
+				classExists := classNameExists(className)
+				if classExists {
+					// Check if class has started
+					fmt.Println("Checking if class has started.")
+					if classHasStarted(className) {
+						// Update the current class register
+						fmt.Println("Adding student to class")
+					} else {
+						fmt.Println("Class has not yet started. Please start the class first.")
+						continue
+					}
+				}
+			} else {
+				fmt.Println("Student ID does not exist. Please try again.")
+				continue
+			}
 		case 3:
 			fmt.Println("Remove a student from a class")
 			fmt.Print("Enter name of class: ")
