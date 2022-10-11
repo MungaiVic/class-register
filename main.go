@@ -86,8 +86,9 @@ func main() {
 			fmt.Print("Please enter the maximum size of class: ")
 			fmt.Scanln(&maxSize)
 			// check if class name already exists
-			if classNameExists(className) {
-				fmt.Println("Class name already exists")
+			classExists, class_id := classNameExists(className)
+			if classExists {
+				fmt.Printf("\nClass name already exists. It has id = %v\n", class_id)
 			} else {
 				newClass, err := CreateClass(Class{
 					name:    className,
@@ -117,7 +118,7 @@ func main() {
 				fmt.Print("Enter class name: ")
 				var className string
 				fmt.Scan(&className)
-				classExists := classNameExists(className)
+				classExists,_ := classNameExists(className)
 				if classExists {
 					// Check if class has started
 					fmt.Println("Checking if class has started.")
@@ -161,7 +162,8 @@ func main() {
 			var className string
 			fmt.Scanln(&className)
 			// check if class exists
-			if classNameExists(className) {
+			classExists, _ := classNameExists(className)
+			if classExists {
 				// check if class has already started
 				if classHasStarted(className) {
 					fmt.Println("Class has already started")
@@ -179,7 +181,8 @@ func main() {
 			var className string
 			fmt.Scanln(&className)
 			// check if class exists
-			if classNameExists(className) {
+			classExists, _ := classNameExists(className)
+			if classExists {
 				// check if class has already ended
 				if classHasEnded(className) {
 					fmt.Println("Class has already ended")

@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -45,19 +46,20 @@ func AddStudentToClass(student Student, className string) {
 
 func RemoveStudentFromClass(studentName, className string) {
 	// find class
-	if classNameExists(className) {
-		// find student
-		// 	for i := 0; i < len(classes); i++ {
-		// 		if classes[i].name == className {
-		// 			for j := 0; j < len(classes[i].students); j++ {
-		// 				if classes[i].students[j].Name == studentName {
-		// 					// remove student
-		// 					classes[i].students = append(classes[i].students[:j], classes[i].students[j+1:]...)
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-	}
+	// if classNameExists(className) {
+	// find student
+	// 	for i := 0; i < len(classes); i++ {
+	// 		if classes[i].name == className {
+	// 			for j := 0; j < len(classes[i].students); j++ {
+	// 				if classes[i].students[j].Name == studentName {
+	// 					// remove student
+	// 					classes[i].students = append(classes[i].students[:j], classes[i].students[j+1:]...)
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
+	fmt.Println("Removing student from class")
 }
 
 func PrintStudentsInClass(className string) {
@@ -69,55 +71,66 @@ func PrintStudentsInClass(className string) {
 	}
 }
 
-func classNameExists(className string) bool {
+func classNameExists(className string) (bool, string) {
 	var class Class
+	// var classID uint8
 
 	row := db.QueryRow("SELECT * FROM class WHERE className = ?", className)
 	// unmarshall the row object to Class
 	if err := row.Scan(&class.id, &class.name, &class.maxSize); err != nil {
 		if err == sql.ErrNoRows {
-			// Do nothing is duplicate class name is not found
-			return false
+			// Do nothing if duplicate class name is not found
+			return false, class.id
 		}
 	}
-	return true
+	// classID = class.id
+
+	return true, class.id
 }
 
 func LogStartTime(className string) {
 	// find class
-	if classNameExists(className) {
+	classExists, class_id := classNameExists(className)
+	if classExists {
 		// check if class has started
-		for i := 0; i < len(classes); i++ {
-			if classes[i].name == className {
-				// if classes[i].startTime == nil {
-				// 	// log start time
-				// 	currentTime := time.Now()
-				// 	classes[i].startTime = &currentTime
-				// }
-			}
+		fmt.Printf("Class Exists with id = %v\n", class_id)
+		// Logging start time
+		result, err := db.Exec("INSERT INTO classtime (classId, startTime) VALUES (?, ?)", class_id, time.Now())
+		if err != nil {
+			fmt.Printf("CreateClass: %v", err)
 		}
+		id, err := result.LastInsertId()
+		if err != nil {
+			fmt.Printf("Log Start time: %v", err)
+		}
+		fmt.Printf("\nClass %v has started. Entry ID = %v\n\n", className, id)
+	} else {
+		fmt.Println("Class doesn't exist")
 	}
 }
 
 func classHasStarted(className string) bool {
 	// find class
-	if classNameExists(className) {
+	classExists, _ := classNameExists(className)
+	if classExists {
 		// check if class has started
 		fmt.Println("Checking")
+
 	}
 	return false
 }
 
 func classHasEnded(className string) bool {
 	//find class
-	if classNameExists(className) {
+	classExists, _ := classNameExists(className)
+	if classExists {
 		// check if class has ended
 		for i := 0; i < len(classes); i++ {
-			if classes[i].name == className {
-				// if classes[i].endTime != nil {
-				// 	return true
-				// }
-			}
+			// if classes[i].name == className {
+			// 	// if classes[i].endTime != nil {
+			// 	// 	return true
+			// 	// }
+			// }
 		}
 	}
 	return false
@@ -125,16 +138,18 @@ func classHasEnded(className string) bool {
 
 func LogEndTime(className string) {
 	// find class
-	if classNameExists(className) {
+
+	classExists, _ := classNameExists(className)
+	if classExists {
 		// check if class has ended
 		for i := 0; i < len(classes); i++ {
-			if classes[i].name == className {
-				if classes == nil {
-					// log end time
-					// currentTime := time.Now()
-					// classes[i].endTime = &currentTime
-				}
-			}
+			// if classes[i].name == className {
+			// 	// if classes == nil {
+			// 	// 	// log end time
+			// 	// 	// currentTime := time.Now()
+			// 	// 	// classes[i].endTime = &currentTime
+			// 	// }
+			// }
 		}
 	}
 }
