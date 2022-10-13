@@ -9,11 +9,6 @@ import (
 )
 
 func CreateClass(class Class) (int64, error) {
-	// Create a new class
-	// newClass := Class{
-	// 	id:   newClassId,
-	// 	name: name,
-	// }
 	result, err := db.Exec("INSERT INTO class (className, maxSize) VALUES (?, ?)", &class.name, &class.maxSize)
 	if err != nil {
 		return 0, fmt.Errorf("CreateClass: %v", err)
@@ -45,30 +40,11 @@ func AddStudentToClass(student Student, className string) {
 }
 
 func RemoveStudentFromClass(studentName, className string) {
-	// find class
-	// if classNameExists(className) {
-	// find student
-	// 	for i := 0; i < len(classes); i++ {
-	// 		if classes[i].name == className {
-	// 			for j := 0; j < len(classes[i].students); j++ {
-	// 				if classes[i].students[j].Name == studentName {
-	// 					// remove student
-	// 					classes[i].students = append(classes[i].students[:j], classes[i].students[j+1:]...)
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
 	fmt.Println("Removing student from class")
 }
 
 func PrintStudentsInClass(className string) {
-	for i := 0; i < len(classes); i++ {
-		if classes[i].name == className {
-			// fmt.Println(classes[i].students)
-		}
-		// fmt.Println(classes[i].name, ", id: ", classes[i].id)
-	}
+	fmt.Println("Students are printed here.")
 }
 
 func classNameExists(className string) (bool, string) {
@@ -92,12 +68,12 @@ func LogStartTime(className string) {
 	// find class
 	classExists, class_id := classNameExists(className)
 	if classExists {
-		// check if class has started
+		//TODO: check if class has started
 		fmt.Printf("Class Exists with id = %v\n", class_id)
 		// Logging start time
 		result, err := db.Exec("INSERT INTO classtime (classId, startTime) VALUES (?, ?)", class_id, time.Now())
 		if err != nil {
-			fmt.Printf("CreateClass: %v", err)
+			fmt.Printf("LogStartTime: %v", err)
 		}
 		id, err := result.LastInsertId()
 		if err != nil {
@@ -125,32 +101,29 @@ func classHasEnded(className string) bool {
 	classExists, _ := classNameExists(className)
 	if classExists {
 		// check if class has ended
-		for i := 0; i < len(classes); i++ {
-			// if classes[i].name == className {
-			// 	// if classes[i].endTime != nil {
-			// 	// 	return true
-			// 	// }
-			// }
-		}
+		fmt.Println("Class exists")
 	}
 	return false
 }
 
 func LogEndTime(className string) {
 	// find class
-
-	classExists, _ := classNameExists(className)
+	classExists, class_id := classNameExists(className)
 	if classExists {
-		// check if class has ended
-		for i := 0; i < len(classes); i++ {
-			// if classes[i].name == className {
-			// 	// if classes == nil {
-			// 	// 	// log end time
-			// 	// 	// currentTime := time.Now()
-			// 	// 	// classes[i].endTime = &currentTime
-			// 	// }
-			// }
+		//TODO: check if class has started
+		fmt.Printf("Class Exists with id = %v\n", class_id)
+		// Logging end time
+		result, err := db.Exec("UPDATE classtime SET endTime = ? WHERE classId = ?", time.Now(), class_id)
+		if err != nil {
+			fmt.Printf("LogEndTime: %v", err)
 		}
+		id, err := result.LastInsertId()
+		if err != nil {
+			fmt.Printf("Log End time: %v", err)
+		}
+		fmt.Printf("\nClass %v has ended. Entry ID = %v\n\n", className, id)
+	} else {
+		fmt.Println("Class doesn't exist")
 	}
 }
 
